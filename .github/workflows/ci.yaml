@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            system: x86_64-linux
+        #   - os: macos-latest
+        #     system: aarch64-darwin
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          system: ${{ matrix.system }}
+
+      - name: Run unit/integration/doc tests
+        run: |
+          nix develop .#devShells.${{ matrix.system }}.default --command bash -lc "
+              cargo test --all -- --nocapture
+              cargo nextest run
+          "

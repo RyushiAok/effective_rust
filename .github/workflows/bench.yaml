@@ -1,0 +1,30 @@
+name: Benchmarks
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bench:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            system: x86_64-linux
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+        with:
+          system: ${{ matrix.system }}
+
+      - name: Run benchmarks (nightly)
+        run: |
+          nix develop .#devShells.x86_64-linux.default \
+            --command bash -lc "
+              cargo +nightly bench
+            "
