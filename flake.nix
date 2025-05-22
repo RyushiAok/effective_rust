@@ -25,6 +25,9 @@
           name = "effective-rust";
           overlays = [ (import rust-overlay) ];
           pkgs = import nixpkgs { inherit system overlays; };
+          toolchain = (pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain).override {
+            extensions = [ "rust-src" ];
+          };
         in
         {
           devShells = {
@@ -34,7 +37,12 @@
                 cargo-udeps
                 cargo-nextest
                 rust-analyzer
+                sccache
               ];
+              shellHook = ''
+                export RUSTC_WRAPPER=${pkgs.sccache}/bin/sccache
+                export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${pkgs.stdenv.cc.cc.lib}/lib
+              '';
             };
           };
         };

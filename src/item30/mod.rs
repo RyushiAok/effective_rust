@@ -6,7 +6,7 @@ pub fn add(a: i32, b: i32) -> i32 {
 /// # Examples
 /// ```
 /// use effective_rust::item30::greet;
-/// 
+///
 /// let name = "Alice";
 /// let greeting = greet(name);
 /// assert_eq!(greeting, "Hello, Alice!");
@@ -19,6 +19,12 @@ pub fn greet(name: &str) -> String {
     format!("Hello, {}!", name)
 }
 
+pub fn factorial(n: u128) -> u128 {
+    match n {
+        0 => 1,
+        _ => n * factorial(n - 1),
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;

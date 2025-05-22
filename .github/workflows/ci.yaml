@@ -30,5 +30,6 @@ jobs:
         run: |
           nix develop .#devShells.${{ matrix.system }}.default --command bash -lc "
               cargo test --all -- --nocapture
+              cargo test --examples
               cargo nextest run
           "
